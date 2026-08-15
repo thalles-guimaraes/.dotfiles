@@ -27,11 +27,83 @@ in
     };
   };
 
+  # --- Configurações do Dunst ---
+  services.dunst = {
+    enable = true;
+    
+    settings = {
+      global = {
+        font = "JetBrainsMono Nerd Font 11"; # Usando a fonte que você já instalou
+        
+        # Posicionamento e tamanho
+        width = 300;
+        height = 300;
+        offset = "20x20";
+        origin = "top-right";
+        notification_limit = 5;
+
+        # Visual e bordas
+        corner_radius = 12; # Combinando com o seu Rofi
+        frame_width = 2;
+        gap_size = 5;
+        
+        # Espaçamento interno
+        padding = 12;
+        horizontal_padding = 12;
+        text_icon_padding = 15;
+
+        # Formato do texto
+        format = "<b>%s</b>\n%b";
+        
+        # Ícones
+        icon_position = "left";
+        min_icon_size = 32;
+        max_icon_size = 64;
+      };
+
+      # Os blocos de urgência (urgency_low, urgency_normal, urgency_critical)
+      # receberão as cores automaticamente pelo catppuccin-nix!
+    };
+  };
+
   # --- Configurações de Tema Global (Dark Mode) ---
 
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
+    };
+  };
+
+  # --- Cursor do mouse Catppuccin ---
+  home.pointerCursor = {
+    gtk.enable = true;
+    x11.enable = true;
+
+    package = pkgs.catppuccin-cursors.frappeMauve;
+    name = "catppuccin-frappe-mauve-cursors";
+    size = 24;
+  };
+
+  # --- Criação das pastas padrão do sistema (documents, downloads, etc) ---
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = true;
+    templates = null;
+    publicShare = null;
+    music = null;
+  };
+
+  # --- Aplicativos Padrão (MIME Apps) ---
+  xdg.mimeApps = {
+    enable = true;
+    
+    # Define os programas padrão para cada tipo de arquivo
+    defaultApplications = {
+      "application/pdf" = [ "firefox.desktop" ]; # Abrir PDFs no Firefox (como exemplo)
+      "image/png"       = [ "org.gnome.eog.desktop" ]; # Abrir PNGs no Eye of GNOME (eog)
+      "image/jpeg"      = [ "org.gnome.eog.desktop" ]; # Abrir JPEGs no eog
+      "video/mp4"       = [ "mpv.desktop" ];           # Abrir MP4s no MPV
+      "text/plain"      = [ "code.desktop" ];          # Abrir textos no VSCode
     };
   };
 

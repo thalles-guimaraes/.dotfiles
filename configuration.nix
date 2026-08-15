@@ -99,7 +99,6 @@
     # hyprland
     hyprpaper
     hypridle
-    dunst
     libnotify
     wl-clipboard
     cliphist
@@ -154,5 +153,10 @@
   system.stateVersion = "26.05"; # Did you read the comment?
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.gc = {
+    automatic = true;
+    dates = "weekly"; # O sistema tentará rodar a limpeza 1x por semana
+    options = "--delete-older-than 7d"; # Apaga tudo que for mais velho que 7 dias
+  };
 
 }
