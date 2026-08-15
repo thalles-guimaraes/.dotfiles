@@ -71,6 +71,9 @@
   security.polkit.enable = true;
   programs.steam.enable = true;
   programs.thunar.enable = true;
+  
+  # Thunar pegar cor
+  programs.xfconf.enable = true;
   services.gvfs.enable = true;
   services.tumbler.enable = true;
   programs.fish.enable = true;
@@ -111,7 +114,6 @@
     spotify
     obsidian
     qbittorrent
-    vscode
     xdg-utils
     eog
     mpv

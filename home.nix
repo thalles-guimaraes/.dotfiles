@@ -1,12 +1,17 @@
 { config, pkgs, inputs, ... }:
 
+let
+  catppuccinGtk = pkgs.catppuccin-gtk.override {
+    accents = [ "mauve" ];
+    size = "standard";
+    variant = "frappe";
+  };
+in
 {
-
   imports = [
     inputs.catppuccin.homeModules.catppuccin
   ];
 
-  
   # --- Configurações Básicas ---
   home.username = "thallesnote";
   home.homeDirectory = "/home/thallesnote";
@@ -15,55 +20,85 @@
 
   # --- Configurações do Git ---
   programs.git = {
-  enable = true;
-  settings.user = {
-    name  = "Thalles Guimaraes";
-    email = "thalles.guimaraes456@gmail.com";
+    enable = true;
+    settings.user = {
+      name = "Thalles Guimaraes";
+      email = "thalles.guimaraes456@gmail.com";
+    };
   };
-};
+
   # --- Configurações de Tema Global (Dark Mode) ---
-  
-  # Força o sistema a avisar todos os apps que você prefere o modo escuro
+
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
     };
   };
 
-  # Habilita o GTK. Como o catppuccin.autoEnable = true está ligado, 
-  # ele vai baixar e aplicar o tema Frappé em todos os apps nativos (como o Thunar)!
-  gtk.enable = true;
+  # --- Tema GTK Catppuccin ---
+  gtk = {
+    enable = true;
+
+    theme = {
+      name = "catppuccin-frappe-mauve-standard";
+      package = catppuccinGtk;
+    };
+
+    gtk3.extraConfig = {
+      Settings = ''
+        gtk-application-prefer-dark-theme=1
+      '';
+    };
+
+    gtk4.extraConfig = {
+      Settings = ''
+        gtk-application-prefer-dark-theme=1
+      '';
+    };
+  };
 
   # --- Configurações do Firefox ---
   programs.firefox = {
     enable = true;
-    
-    # Criamos um perfil padrão para o Catppuccin ter onde injetar o tema CSS
+
     profiles."${config.home.username}" = {
       isDefault = true;
       extensions.force = true;
     };
   };
 
+  programs.vscode = {
+  enable = true;
 
-  # hyprland
-  home.file.".config/hypr/hyprland.lua".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/hypr/hyprland.lua"; 
-  
-  # hyprlock
+  profiles.default.extensions = with pkgs.vscode-extensions; [
+    catppuccin.catppuccin-vsc
+  ];
+
+  profiles.default.userSettings = {
+    "workbench.colorTheme" = "Catppuccin Frappé";
+    "window.autoDetectColorScheme" = false;
+  };
+};
+
+  # --- Hyprland ---
+  home.file.".config/hypr/hyprland.lua".source =
+    config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/.dotfiles/hypr/hyprland.lua";
+
+  # --- Hyprlock ---
   home.file.".config/hypr/hyprlock.conf".source = ./hypr/hyprlock.conf;
   home.file.".config/hypr/hyprlock-frappe.conf".source = ./hypr/hyprlock-frappe.conf;
-  
-  # hyprpaper
+
+  # --- Hyprpaper ---
   home.file.".config/hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
-  
-  # hypridle
+
+  # --- Hypridle ---
   home.file.".config/hypr/hypridle.conf".source = ./hypr/hypridle.conf;
 
-
-# --- Configurações do Alacritty ---
+  # --- Configurações do Alacritty ---
   programs.alacritty = {
     enable = true;
-    
+
     settings = {
       window = {
         opacity = 0.95;
@@ -77,22 +112,37 @@
 
       font = {
         size = 14.0;
-        normal = { family = "JetBrainsMono Nerd Font"; };
-        bold = { family = "JetBrainsMono Nerd Font"; };
-        italic = { family = "JetBrainsMono Nerd Font"; };
-        bold_italic = { family = "JetBrainsMono Nerd Font"; };
+        normal = {
+          family = "JetBrainsMono Nerd Font";
+        };
+        bold = {
+          family = "JetBrainsMono Nerd Font";
+        };
+        italic = {
+          family = "JetBrainsMono Nerd Font";
+        };
+        bold_italic = {
+          family = "JetBrainsMono Nerd Font";
+        };
       };
     };
   };
 
+  # --- Catppuccin ---
   catppuccin.enable = true;
   catppuccin.autoEnable = true;
   catppuccin.flavor = "frappe";
 
+  # Ícones Catppuccin
+  catppuccin.gtk.icon = {
+    enable = true;
+    accent = "mauve";
+  };
+
   # --- Configurações do Waybar ---
   programs.waybar = {
     enable = true;
-    
+
     settings = {
       mainBar = {
         layer = "top";
@@ -141,7 +191,7 @@
             phone = "";
             portable = "";
             car = "";
-            default = ["" "" ""];
+            default = [ "" "" "" ];
           };
           on-click = "swayosd-client --output-volume mute-toggle";
           on-click-right = "pavucontrol";
@@ -153,11 +203,13 @@
           format = "| <span></span>  {:%d/%m/%Y %H:%M}";
           interval = 1;
           tooltip-format = "<tt>{calendar}</tt>";
+
           calendar = {
             format = {
               today = "<span color='#eed49f'><b>{}</b></span>";
             };
           };
+
           actions = {
             on-click-right = "shift_down";
             on-click = "shift_up";
@@ -167,20 +219,34 @@
         battery = {
           bat = "BAT0";
           interval = 60;
+
           states = {
             warning = 30;
             critical = 15;
           };
+
           events = {
-            on-discharging-warning = "notify-send -u normal 'Low Battery'";
-            on-discharging-critical = "notify-send -u critical 'Very Low Battery'";
-            on-charging-100 = "notify-send -u normal 'Battery Full!'";
+            on-discharging-warning =
+              "notify-send -u normal 'Low Battery'";
+            on-discharging-critical =
+              "notify-send -u critical 'Very Low Battery'";
+            on-charging-100 =
+              "notify-send -u normal 'Battery Full!'";
           };
+
           format = "| {icon} {capacity}%";
           "format-charging" = "| 󰂄 {capacity}%";
           "format-plugged" = "| 🔌 {icon} {capacity}%";
           "format-full" = "|  100%";
-          format-icons = ["" "" "" "" ""];
+
+          format-icons = [
+            ""
+            ""
+            ""
+            ""
+            ""
+          ];
+
           max-length = 25;
         };
       };
@@ -262,10 +328,10 @@
     '';
   };
 
-# --- Configurações do Rofi (Modo Nativo Nix) ---
+  # --- Configurações do Rofi (Modo Nativo Nix) ---
   programs.rofi = {
     enable = true;
-    
+
     extraConfig = {
       modi = "drun,run,window,filebrowser";
       show-icons = true;
@@ -479,5 +545,4 @@
       };
     };
   };
-
 }
