@@ -230,7 +230,7 @@ in
 
         modules-left = [ "custom/icon" "hyprland/window" ];
         modules-center = [ "hyprland/workspaces" ];
-        modules-right = [ "tray" "pulseaudio" "battery" "clock" ];
+        modules-right = ["bluetooth" "tray" "pulseaudio" "battery" "clock" ];
 
         "custom/icon" = {
           format = "";
@@ -245,6 +245,19 @@ in
           disable-scroll = true;
           on-click = "activate";
           format = "{icon}";
+        };
+
+        # Configuração do módulo nativo de Bluetooth
+        bluetooth = {
+          format = " {status}";
+          format-connected = " {device_alias}";
+          format-connected-battery = " {device_alias} {device_battery_percentage}%";
+          tooltip-format = "{controller_alias}\t{controller_address}\n\n{num_connections} conectado(s)";
+          tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{num_connections} conectado(s)\n\n{device_enumerate}";
+          tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
+          
+          # Ao clicar com o botão esquerdo, abre o gerenciador visual do blueman
+          on-click = "blueman-manager";
         };
 
         tray = {
@@ -350,6 +363,19 @@ in
 
       .modules-center {
         padding: 2px;
+      }
+
+      #bluetooth {
+          color: #89b4fa;
+          padding: 0 10px;
+      }
+
+      #bluetooth.disconnected {
+          color: #6c7086;
+      }
+
+      #bluetooth.connected {
+          color: #a6e3a1;
       }
 
       #custom-icon {

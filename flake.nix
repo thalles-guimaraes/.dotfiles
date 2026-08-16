@@ -24,7 +24,6 @@
         specialArgs = { inherit inputs; };
 
         modules = [
-          ./hardware-configuration.nix
           ./configuration.nix
           
           # Módulo do Home Manager

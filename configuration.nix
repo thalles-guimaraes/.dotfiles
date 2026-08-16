@@ -48,7 +48,28 @@
     variant = "";
   };
 
-  console.keyMap = "br-abnt2";
+    console = {
+    keyMap = "br-abnt2";
+
+    colors = [
+      "303446"
+      "e78284"
+      "a6d189"
+      "e5c890"
+      "8caaee"
+      "ca9ee6"
+      "81c8be"
+      "c6d0f5"
+      "626880"
+      "ea999c"
+      "a6d189"
+      "e5c890"
+      "8caaee"
+      "f4b8e4"
+      "99d1db"
+      "ffffff"
+    ];
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users."thallesnote" = {
@@ -62,9 +83,29 @@
   nixpkgs.config.allowUnfree = true;
 
 
-  services.displayManager.sddm = {
+  # --- Greetd / TuiGreet ---
+  services.greetd = {
     enable = true;
-    wayland.enable = true;
+
+    settings = {
+      default_session = {
+        command = ''
+          ${pkgs.tuigreet}/bin/tuigreet \
+            --time \
+            --remember \
+            --remember-session \
+            --cmd 'start-hyprland --' \
+            --theme 'border=magenta;text=white;prompt=magenta;time=blue;action=magenta;button=magenta;container=black;input=white;title=magenta;greet=magenta;'
+        '';
+
+        user = "greeter";
+      };
+    };
+  };
+
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true; # Liga o bluetooth automaticamente no boot
   };
 
 
@@ -76,7 +117,9 @@
   programs.xfconf.enable = true;
   services.gvfs.enable = true;
   services.tumbler.enable = true;
+  
   programs.fish.enable = true;
+  services.blueman.enable = true;
 
 
   programs.hyprland.enable = true;
