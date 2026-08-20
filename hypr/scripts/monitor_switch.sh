@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Define as opções do menu
 options="1. Estender Tela\n2. Duplicar (Mirror)\n3. Somente Tela Secundária\n4. Somente Tela do Notebook"

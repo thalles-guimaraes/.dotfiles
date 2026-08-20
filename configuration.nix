@@ -161,6 +161,7 @@
     mpv
     gnome-calculator
     file-roller
+    btop
 
     # Outros
     vim

@@ -271,7 +271,7 @@ hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd('hyprctl switchxkblayout current 
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ action = "toggle" }))
 
 -- SCRIPTS
-hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("/home/thallesnote/.dotfiles/hypr/scripts/monitor_switch.sh"))
+hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("~/.dotfiles/hypr/scripts/monitor_switch.sh"))
 
 
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
