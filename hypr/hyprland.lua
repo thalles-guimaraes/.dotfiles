@@ -272,6 +272,7 @@ hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ action = "toggle" }))
 
 -- SCRIPTS
 hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("~/.dotfiles/hypr/scripts/monitor_switch.sh"))
+hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd("~/.dotfiles/hypr/scripts/modo_reuniao.sh"))
 
 
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
