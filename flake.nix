@@ -19,30 +19,82 @@
     catppuccin.url = "github:catppuccin/nix";
   };
 
-  outputs = { self, nixpkgs, home-manager, catppuccin,... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, catppuccin, ... }@inputs:
+  let
+    system = "x86_64-linux";
+
+    homeManagerModule = {
+      home-manager.useGlobalPkgs = true;
+      home-manager.useUserPackages = true;
+
+      home-manager.backupFileExtension = "backup";
+
+      home-manager.extraSpecialArgs = {
+        inherit inputs;
+      };
+
+      home-manager.users.thallesnote = import ./home.nix;
+    };
+  in
+  {
     nixosConfigurations = {
-      # MUDE AQUI: Substitua SEU_HOSTNAME pelo nome do seu PC
-      nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        
-        # Passa os inputs para os módulos (útil no futuro)
-        specialArgs = { inherit inputs; };
+
+      notebook = nixpkgs.lib.nixosSystem {
+        inherit system;
+
+        specialArgs = {
+          inherit inputs;
+        };
 
         modules = [
           ./configuration.nix
-          
-          # Módulo do Home Manager
-          home-manager.nixosModules.home-manager
+          ./hardware-notebook.nix
+
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            
-            home-manager.backupFileExtension = "backup";
-
-            home-manager.extraSpecialArgs = { inherit inputs; };
-
-            home-manager.users.thallesnote = import ./home.nix;
+            networking.hostName = "thalles-note";
           }
+
+          home-manager.nixosModules.home-manager
+          homeManagerModule
+        ];
+      };
+
+      desktop = nixpkgs.lib.nixosSystem {
+        inherit system;
+
+        specialArgs = {
+          inherit inputs;
+        };
+
+        modules = [
+          ./configuration.nix
+          ./hardware-desktop.nix
+
+          {
+            networking.hostName = "thalles-desktop";
+          }
+
+          # NVIDIA GTX 1060
+          ({ config, ... }: {
+            hardware.graphics.enable = true;
+
+            services.xserver.videoDrivers = [ "nvidia" ];
+
+            hardware.nvidia = {
+              modesetting.enable = true;
+
+              # GTX 1060 = Pascal.
+              # Não suporta o módulo open atual da NVIDIA.
+              open = false;
+
+              # Pascal agora usa a branch legacy 580.
+              package =
+                config.boot.kernelPackages.nvidiaPackages.legacy_580;
+            };
+          })
+
+          home-manager.nixosModules.home-manager
+          homeManagerModule
         ];
       };
     };
