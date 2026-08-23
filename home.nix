@@ -226,6 +226,7 @@ in
   # --- Configurações do Waybar ---
   programs.waybar = {
     enable = true;
+    package = inputs.waybar.packages.${pkgs.system}.default;
 
     settings = {
       mainBar = {
@@ -255,7 +256,6 @@ in
 
         "hyprland/workspaces" = {
           disable-scroll = true;
-          on-click = "activate";
           format = "{icon}";
         };
 

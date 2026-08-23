@@ -82,6 +82,28 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  # --- Memória / Swap ---
+
+  zramSwap = {
+    enable = true;
+    memoryPercent = 100;
+    priority = 100;
+  };
+
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 16 * 1024; # 16 GiB, valor em MiB
+      priority = 10;
+    }
+  ];
+
+  systemd.oomd = {
+    enable = true;
+    enableRootSlice = true;
+    enableUserSlices = true;
+  };
+
 
   # --- Greetd / TuiGreet ---
   services.greetd = {
@@ -164,6 +186,7 @@
     btop
 
     # Outros
+    iw
     vim
     wget
   ];
