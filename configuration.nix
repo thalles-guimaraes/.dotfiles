@@ -181,6 +181,7 @@
     btop
 
     # Outros
+    pavucontrol
     iw
     vim
     wget
