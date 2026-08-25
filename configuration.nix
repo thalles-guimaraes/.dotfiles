@@ -1,28 +1,32 @@
 # Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# your system. Help is available in the configuration.nix(5) man page
+# and in the NixOS manual (accessible by running `nixos-help`).
 
 { config, pkgs, ... }:
 
 {
 
-  # Bootloader.
+  # ---------------------------------------------------------------------------
+  # Bootloader
+  # ---------------------------------------------------------------------------
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  # ---------------------------------------------------------------------------
+  # Rede
+  # ---------------------------------------------------------------------------
 
-  # Enable networking
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
+
+  # ---------------------------------------------------------------------------
+  # Localização / Idioma
+  # ---------------------------------------------------------------------------
+
   time.timeZone = "America/Sao_Paulo";
 
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
@@ -37,13 +41,17 @@
     LC_TIME = "pt_BR.UTF-8";
   };
 
-  # Configure keymap in X11
+
+  # ---------------------------------------------------------------------------
+  # Teclado
+  # ---------------------------------------------------------------------------
+
   services.xserver.xkb = {
     layout = "br";
     variant = "";
   };
 
-    console = {
+  console = {
     keyMap = "br-abnt2";
 
     colors = [
@@ -66,18 +74,34 @@
     ];
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+
+  # ---------------------------------------------------------------------------
+  # Usuário
+  # ---------------------------------------------------------------------------
+
   users.users."thallesnote" = {
     isNormalUser = true;
     description = "thallesnote";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [];
+
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
+
+    packages = with pkgs; [ ];
   };
 
-  # Allow unfree packages
+
+  # ---------------------------------------------------------------------------
+  # Pacotes proprietários
+  # ---------------------------------------------------------------------------
+
   nixpkgs.config.allowUnfree = true;
 
-  # --- Memória / Swap ---
+
+  # ---------------------------------------------------------------------------
+  # Memória / Swap
+  # ---------------------------------------------------------------------------
 
   zramSwap = {
     enable = true;
@@ -100,7 +124,10 @@
   };
 
 
-  # --- Greetd / TuiGreet ---
+  # ---------------------------------------------------------------------------
+  # Greetd / TuiGreet
+  # ---------------------------------------------------------------------------
+
   services.greetd = {
     enable = true;
 
@@ -120,31 +147,100 @@
     };
   };
 
+
+  # ---------------------------------------------------------------------------
+  # Bluetooth
+  # ---------------------------------------------------------------------------
+
   hardware.bluetooth = {
     enable = true;
-    powerOnBoot = true; # Liga o bluetooth automaticamente no boot
+    powerOnBoot = true;
   };
 
-
-  security.polkit.enable = true;
-  programs.steam.enable = true;
-  programs.thunar.enable = true;
-  
-  # Thunar pegar cor
-  programs.xfconf.enable = true;
-  services.gvfs.enable = true;
-  services.tumbler.enable = true;
-  
-  programs.fish.enable = true;
   services.blueman.enable = true;
 
+
+  # ---------------------------------------------------------------------------
+  # Segurança / Polkit
+  # ---------------------------------------------------------------------------
+
+  security.polkit.enable = true;
+
+
+  # ---------------------------------------------------------------------------
+  # Steam
+  # ---------------------------------------------------------------------------
+
+  programs.steam.enable = true;
+
+
+  # ---------------------------------------------------------------------------
+  # Thunar
+  # ---------------------------------------------------------------------------
+
+  programs.thunar.enable = true;
+
+  # O módulo do Thunar já habilita xfconf automaticamente.
+  # Estou mantendo explícito porque você já o utilizava para integração visual.
+  programs.xfconf.enable = true;
+
+  services.gvfs.enable = true;
+  services.tumbler.enable = true;
+
+
+  # ---------------------------------------------------------------------------
+  # Thunar / Xfce - Terminal padrão
+  # ---------------------------------------------------------------------------
+  #
+  # O "Open Terminal Here" do Thunar usa o conceito de
+  # TerminalEmulator do Xfce.
+  #
+  # Esse arquivo equivale ao:
+  #
+  #   /etc/xdg/xfce4/helpers.rc
+  #
+  # e define Alacritty como terminal padrão para todos os usuários
+  # que não sobrescreverem essa configuração em ~/.config/xfce4/helpers.rc.
+  #
+
+  environment.etc."xdg/xfce4/helpers.rc".text = ''
+    TerminalEmulator=alacritty
+  '';
+
+
+  # Os helpers do Xfce, incluindo alacritty.desktop, ficam em:
+  #
+  #   share/xfce4/helpers/
+  #
+  # Como não estamos instalando o desktop Xfce completo, precisamos
+  # explicitamente expor esse diretório no ambiente do sistema.
+  #
+  environment.pathsToLink = [
+    "/share/xfce4"
+  ];
+
+
+  # ---------------------------------------------------------------------------
+  # Shell
+  # ---------------------------------------------------------------------------
+
+  programs.fish.enable = true;
+
+  users.users.thallesnote.shell = pkgs.fish;
+
+
+  # ---------------------------------------------------------------------------
+  # Hyprland
+  # ---------------------------------------------------------------------------
 
   programs.hyprland.enable = true;
   programs.hyprlock.enable = true;
 
-  users.users.thallesnote.shell = pkgs.fish;
 
+  # ---------------------------------------------------------------------------
   # Fonts
+  # ---------------------------------------------------------------------------
+
   fonts.packages = with pkgs; [
     fira-code
     jetbrains-mono
@@ -153,10 +249,17 @@
     nerd-fonts.jetbrains-mono
   ];
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+
+  # ---------------------------------------------------------------------------
+  # Pacotes instalados no sistema
+  # ---------------------------------------------------------------------------
+
   environment.systemPackages = with pkgs; [
-    # hyprland
+
+    # -------------------------------------------------------------------------
+    # Hyprland
+    # -------------------------------------------------------------------------
+
     hyprpaper
     hypridle
     libnotify
@@ -168,8 +271,36 @@
     networkmanagerapplet
     swayosd
     heroic
-    
+
+
+    # -------------------------------------------------------------------------
+    # Thunar / Xfce
+    # -------------------------------------------------------------------------
+
+    # Fornece o comando:
+    #
+    #   exo-open
+    #
+    xfce4-exo
+
+    # Fornece os helpers do Xfce, incluindo:
+    #
+    #   share/xfce4/helpers/alacritty.desktop
+    #
+    xfce4-settings
+
+    # Instalamos Alacritty também no sistema porque agora ele é
+    # o TerminalEmulator padrão global.
+    #
+    # Você pode continuar configurando aparência, fonte etc.
+    # pelo Home Manager normalmente.
+    alacritty
+
+
+    # -------------------------------------------------------------------------
     # Apps gerais
+    # -------------------------------------------------------------------------
+
     anki
     spotify
     obsidian
@@ -181,46 +312,68 @@
     file-roller
     btop
 
+
+    # -------------------------------------------------------------------------
     # Outros
+    # -------------------------------------------------------------------------
+
     pavucontrol
     iw
     vim
     wget
   ];
 
-  services.udev.packages = [ pkgs.swayosd ];
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
 
-  # List services that you want to enable:
+  # ---------------------------------------------------------------------------
+  # SwayOSD / Udev
+  # ---------------------------------------------------------------------------
 
-  # Enable the OpenSSH daemon.
+  services.udev.packages = [
+    pkgs.swayosd
+  ];
+
+
+  # ---------------------------------------------------------------------------
+  # SSH
+  # ---------------------------------------------------------------------------
+
   # services.openssh.enable = true;
 
-  # Open ports in the firewall.
+
+  # ---------------------------------------------------------------------------
+  # Firewall
+  # ---------------------------------------------------------------------------
+
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "26.05"; # Did you read the comment?
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  # ---------------------------------------------------------------------------
+  # NixOS State Version
+  # ---------------------------------------------------------------------------
+
+  system.stateVersion = "26.05";
+
+
+  # ---------------------------------------------------------------------------
+  # Nix / Flakes
+  # ---------------------------------------------------------------------------
+
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+
+
+  # ---------------------------------------------------------------------------
+  # Garbage Collector
+  # ---------------------------------------------------------------------------
+
   nix.gc = {
     automatic = true;
-    dates = "weekly"; # O sistema tentará rodar a limpeza 1x por semana
-    options = "--delete-older-than 7d"; # Apaga tudo que for mais velho que 7 dias
+    dates = "weekly";
+    options = "--delete-older-than 7d";
   };
 
 }
