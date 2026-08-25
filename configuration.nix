@@ -167,6 +167,7 @@
     hyprpolkitagent
     networkmanagerapplet
     swayosd
+    heroic
     
     # Apps gerais
     anki
