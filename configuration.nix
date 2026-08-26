@@ -311,6 +311,7 @@
     gnome-calculator
     file-roller
     btop
+    hydralauncher
 
 
     # -------------------------------------------------------------------------
