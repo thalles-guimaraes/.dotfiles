@@ -99,7 +99,7 @@ in
     
     # Define os programas padrão para cada tipo de arquivo
     defaultApplications = {
-      "application/pdf" = [ "firefox.desktop" ]; # Abrir PDFs no Firefox (como exemplo)
+      "application/pdf" = [ "okularApplication_pdf.desktop" ]; # Abrir PDFs no Firefox (como exemplo)
       "image/png"       = [ "org.gnome.eog.desktop" ]; # Abrir PNGs no Eye of GNOME (eog)
       "image/jpeg"      = [ "org.gnome.eog.desktop" ]; # Abrir JPEGs no eog
       "video/mp4"       = [ "mpv.desktop" ];           # Abrir MP4s no MPV

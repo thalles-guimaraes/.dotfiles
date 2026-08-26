@@ -291,9 +291,6 @@
 
     # Instalamos Alacritty também no sistema porque agora ele é
     # o TerminalEmulator padrão global.
-    #
-    # Você pode continuar configurando aparência, fonte etc.
-    # pelo Home Manager normalmente.
     alacritty
 
 
@@ -312,6 +309,7 @@
     file-roller
     btop
     hydralauncher
+    kdePackages.okular
 
 
     # -------------------------------------------------------------------------
