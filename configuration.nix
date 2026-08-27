@@ -310,6 +310,7 @@
     btop
     hydralauncher
     kdePackages.okular
+    gthumb
 
 
     # -------------------------------------------------------------------------
