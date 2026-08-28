@@ -311,6 +311,7 @@
     hydralauncher
     kdePackages.okular
     gthumb
+    onlyoffice-desktopeditors
 
 
     # -------------------------------------------------------------------------
