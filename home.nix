@@ -12,6 +12,11 @@ in
     inputs.catppuccin.homeModules.catppuccin
   ];
 
+
+  home.packages = with pkgs; [
+    arduino-ide
+  ];
+
   # --- Configurações Básicas ---
   home.username = "thallesnote";
   home.homeDirectory = "/home/thallesnote";
