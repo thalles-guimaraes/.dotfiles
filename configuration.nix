@@ -313,6 +313,7 @@
     kdePackages.okular
     gthumb
     onlyoffice-desktopeditors
+    krita
 
 
     # -------------------------------------------------------------------------
