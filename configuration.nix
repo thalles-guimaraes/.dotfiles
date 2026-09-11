@@ -179,7 +179,13 @@
   # Thunar
   # ---------------------------------------------------------------------------
 
-  programs.thunar.enable = true;
+  programs.thunar = {
+    enable = true;
+
+    plugins = with pkgs.xfce; [
+      thunar-archive-plugin
+    ];
+  };
 
   # O módulo do Thunar já habilita xfconf automaticamente.
   # Estou mantendo explícito porque você já o utilizava para integração visual.
