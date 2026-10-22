@@ -332,6 +332,8 @@
     wget
     python3
     python3Packages.pyserial
+    baobab
+    gparted
   ];
 
 
