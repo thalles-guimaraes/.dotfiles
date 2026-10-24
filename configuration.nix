@@ -41,6 +41,29 @@
     LC_TIME = "pt_BR.UTF-8";
   };
 
+  # Suporte aos dispositivos virtuais de entrada
+hardware.uinput.enable = true;
+
+# Detectar a mesa MX002 ao conectar
+services.udev.extraRules = ''
+  SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTR{idVendor}=="08f2", ATTR{idProduct}=="6811", TAG+="systemd", ENV{SYSTEMD_ALIAS}="/dev/mx002", ENV{SYSTEMD_WANTS}+="mx002.service"
+'';
+
+# Driver da mesa digitalizadora Multilaser MX002
+systemd.services.mx002 = {
+  description = "Multilaser MX002 Tablet Driver";
+
+  bindsTo = [ "dev-mx002.device" ];
+  after = [ "dev-mx002.device" ];
+
+  serviceConfig = {
+    Type = "simple";
+    ExecStart = "/opt/mx002/bin/mx002";
+    Restart = "on-failure";
+    RestartSec = "2s";
+  };
+  };
+
 
   # ---------------------------------------------------------------------------
   # Teclado
@@ -326,6 +349,8 @@
     # Outros
     # -------------------------------------------------------------------------
 
+    google-chrome
+    
     pavucontrol
     iw
     vim
